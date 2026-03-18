@@ -14,7 +14,6 @@ Integer m = getNumContenedores()
 goal section
 
 // decidir MAX/MIN y expresar como funcion lineal
-
 // Maximizar la suma de contenedores marcados como "llenos"
 // Usaremos una variable binaria auxiliar y[j] que será 1 si el contenedor j está lleno.
 max sum(y[j], j in 0 .. m-1)

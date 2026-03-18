@@ -31,29 +31,39 @@ public class Cromosoma3 implements RangeIntegerData<Solucion3> {
         int contenedoresTotalmenteLlenos = 0;
         double penalizacion = 0.0;
 
+        // Procesamiento inicial: Cálculo de cargas por contenedor
         for (int i = 0; i < m; i++) {
             int j = value.get(i);
-            if (j < n) { // Si el elemento i está asignado al contenedor j
-                // Restricción 1: ¿Puede el elemento i ir en el contenedor j por tipo?
-                if (Datos3.getPuedeUbicarse(i, j) > 0) {
-                    cargaContenedores[j] += Datos3.getTamElemento(i);
-                } else {
-                    penalizacion += 100.0; // Penalizar si el tipo no coincide
-                }
-            }
+            
+            // Si el gen i tiene un valor menor a n, está asignado al contenedor j
+            if (j < n) {
+				// 2. Restricción de Compatibilidad: x[i,j] <= getPuedeUbicarse(i,j)
+				// Si el método devuelve 0, la asignación es inválida
+				if (Datos3.getPuedeUbicarse(i, j) == 0) {
+					penalizacion += 1.0; 
+				}
+				cargaContenedores[j] += Datos3.getTamElemento(i);
+			}
+			// Nota: La Restricción 1 (Cada elemento en max 1 contenedor) 
+			// se cumple por diseño del cromosoma (un gen i solo puede tener un valor j).
         }
 
         for (int j = 0; j < n; j++) {
-            int capacidad = Datos3.getTamContenedor(j);
-            if (cargaContenedores[j] == capacidad) {
-                contenedoresTotalmenteLlenos++;
-            } else if (cargaContenedores[j] > capacidad) {
-                // Penalizar exceso de capacidad
-                penalizacion += Math.pow(cargaContenedores[j] - capacidad, 2);
-            }
+        		int capacidad = Datos3.getTamContenedor(j);
+            
+	         // 3. Límite de Capacidad: Suma de tamaños <= getTamContenedor(j)
+	         if (cargaContenedores[j] > capacidad) {
+	        	 	penalizacion += Math.pow(cargaContenedores[j] - capacidad, 2);
+	         }
+	
+	         // 4. Condición de Llenado Total (Activa y[j]):
+	         // Si la carga es exactamente la capacidad, contamos el contenedor como lleno
+	         if (cargaContenedores[j] == capacidad) {
+	         	contenedoresTotalmenteLlenos++;
+	         }
         }
 
-        // Maximizar contenedores llenos restando las penalizaciones por incumplir restricciones
+        // goal section: Maximizar contenedores llenos restando el peso de las restricciones
         return contenedoresTotalmenteLlenos - (1000.00 * penalizacion);
     }
 
@@ -65,14 +75,12 @@ public class Cromosoma3 implements RangeIntegerData<Solucion3> {
 
 	@Override
 	public Integer max(Integer i) {
-		// TODO Auto-generated method stub
-		return Datos3.getNumElementos();
+	    return Datos3.getNumContenedores(); // n = sin asignar, 0 a n-1 = contenedores
 	}
 
 	@Override
 	public Integer min(Integer i) {
-		// TODO Auto-generated method stub
-		return 0;
+	    return 0;
 	}
 	
 }

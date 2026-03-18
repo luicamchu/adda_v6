@@ -33,7 +33,7 @@ public class Cromosoma1 implements BinaryData<Solucion1> {
 		int incompatibilidades = 0;
 		int n = value.size();
 
-		// 1. Recorrido del cromosoma para calcular métricas
+		// Recorrido del cromosoma para extraer datos de los candidatos seleccionados
 		for (int i = 0; i < n; i++) {
 			if (value.get(i) == 1) { // Si el candidato i es seleccionado
 				valoracionTotal += Datos1.getValoracion(i);
@@ -49,24 +49,28 @@ public class Cromosoma1 implements BinaryData<Solucion1> {
 			}
 		}
 
-		// 2. Cálculo de penalizaciones
+		// Cálculo de penalizaciones
 		double penalizacion = 0;
-		// Restricción: Presupuesto máximo
-		if (sueldoTotal > Datos1.getPresupuestoMax()) {
-			penalizacion += Math.pow(sueldoTotal - Datos1.getPresupuestoMax(), 2);
-		}
-		// Restricción: Cubrir todas las cualidades deseadas
+
+		// 1. Cobertura de Cualidades: Al menos un candidato seleccionado por cada cualidad j
+		// Calculamos cuántas de las 'm' cualidades totales no han sido cubiertas
 		int cualidadesFaltantes = Datos1.getNumCualidades() - cualidadesCubiertas.size();
 		if (cualidadesFaltantes > 0) {
 			penalizacion += Math.pow(cualidadesFaltantes, 2);
 		}
-		// Restricción: Incompatibilidades
+
+		// 2. Restricción de Presupuesto: La suma de sueldos no debe exceder S
+		if (sueldoTotal > Datos1.getPresupuestoMax()) {
+			penalizacion += Math.pow(sueldoTotal - Datos1.getPresupuestoMax(), 2);
+		}
+
+		// 3. Incompatibilidad: Si i y k son incompatibles, no pueden estar ambos (x[i]+x[k] <= 1)
 		if (incompatibilidades > 0) {
 			penalizacion += Math.pow(incompatibilidades, 2);
 		}
 
-		// El objetivo es maximizar valoración total reduciendo penalizaciones
-		return valoracionTotal - 1000 * (penalizacion);
+		// El objetivo (Goal) es maximizar valoracionTotal restando el peso de las restricciones incumplidas
+		return valoracionTotal - 1000 * penalizacion;
 	}
 
 	@Override

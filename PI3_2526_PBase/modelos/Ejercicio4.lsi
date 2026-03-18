@@ -11,25 +11,28 @@ Double maxTime = Datos4.maxTime
 Double tp = Datos4.TP
 
 goal section
-// decidir MAX/MIN y expresar como funcion lineal
 
-min sum(esfuerzo(i, j) x[i, j], i, j in 0..n-1 | i != j)
+// decidir MAX/MIN y expresar como funcion lineal
+min sum(esfuerzo(i, j) x[i, j], i, j in 0 .. n-1 | i != j)
 
 constraints section
-// Seguir las restricciones del modelo y expresar como f. lineal
 
+// Seguir las restricciones del modelo y expresar como f. lineal
 // 1. Camino que pase por todas las intersecciones exactamente una vez y vuelva al origen
-sum(x[i, j], j in 0..n-1 | i != j) = 1, i in 0..n-1
-sum(x[i, j], i in 0..n-1 | i != j) = 1, j in 0..n-1
+sum(x[i, j], j in 0 .. n-1 | i != j) = 1, i in 0 .. n-1
+sum(x[i, j], i in 0 .. n-1 | i != j) = 1, j in 0 .. n-1
 
 // 2. La duración total del trayecto sea menor o igual que ¾ de la suma total de las duraciones de todas las calles del grafo
-sum(tiempo(i, j) x[i, j], i, j in 0..n-1 | i != j) <= maxTime
+sum(tiempo(i, j) x[i, j], i, j in 0 .. n-1 | i != j) <= maxTime
 
 // 3. Deben existir al menos 2 intersecciones consecutivas que alberguen un monumento de interés
 // Para asegurar que el camino vuelve al origen pasando por todos los puntos
-sum(x[i, j], i, j in 0..n-1 | i != j && sonMonumentos(i, j)) >= 1
+sum(x[i, j], i, j in 0 .. n-1 | i != j && sonMonumentos(i, j)) >= 1
 
-// Ciclos 
+// 4. Eliminación de Subtours (MTZ)
+// Las variables u[i] representan el orden de visita
+// Si x[i,j] = 1, entonces u[j] >= u[i] + 1
+u[i] - u[j] + n * x[i,j] <= n - 1, i in 1 .. n-1, j in 1 .. n-1 | i != j
 
 bin section
 

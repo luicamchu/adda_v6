@@ -29,7 +29,7 @@ public class Cromosoma4 implements PermutationData<Solucion4> {
         double tiempoTotal = 0.0;
         int monumentosConsecutivos = 0;
         
-        // Recorremos la permutación para calcular valores
+        // Recorrido de la permutación para calcular las métricas del ciclo
         for (int i = 0; i < list.size(); i++) {
             int origen = list.get(i);
             // El último conecta con el primero para cerrar el ciclo
@@ -38,26 +38,32 @@ public class Cromosoma4 implements PermutationData<Solucion4> {
             esfuerzoTotal += Datos4.esfuerzo(origen, destino);
             tiempoTotal += Datos4.tiempo(origen, destino);
             
+            // Verificamos si el arco (i, j) une dos monumentos
             if (Datos4.sonMonumentos(origen, destino)) {
                 monumentosConsecutivos++;
             }
         }
 
-        // --- GESTIÓN DE RESTRICCIONES (Penalizaciones) ---
         double penalizacion = 0.0;
         
-        // 1. Restricción de tiempo (<= maxTime)
+        // 1. Camino que pase por todas las intersecciones exactamente una vez y vuelva al origen
+        // Nota: Esta restricción se cumple POR CONSTRUCCIÓN al usar ChromosomeType.Permutation.
+        // No requiere penalización adicional en el fitness.
+        
+        // 2. La duración total del trayecto sea menor o igual que maxTime
         if (tiempoTotal > Datos4.maxTime) {
             penalizacion += Math.pow(tiempoTotal - Datos4.maxTime, 2);
         }
         
-        // 2. Al menos 2 monumentos consecutivos
+        // 3. Al menos 2 intersecciones consecutivas que alberguen un monumento
+        // Según tu modelo LSI: sum(x[i, j] | sonMonumentos) >= 1
         if (monumentosConsecutivos < 1) {
-            penalizacion += 10.0;
+            penalizacion += 100.0; // Penalización constante o proporcional según prefieras
         }
 
-        // El objetivo es MINIMIZAR el esfuerzo, por lo tanto el fitness es negativo
-        return -(esfuerzoTotal + (10000 * penalizacion));
+        // goal section: MINIMIZAR el esfuerzo total
+        // En AG de la librería lsi, para minimizar devolvemos el valor en negativo
+        return -(esfuerzoTotal + 10000 * penalizacion);
     }
 
     @Override

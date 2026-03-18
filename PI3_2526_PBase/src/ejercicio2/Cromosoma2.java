@@ -25,15 +25,16 @@ public class Cromosoma2 implements RangeIntegerData<Solucion2> {
 
 	@Override
 	public Double fitnessFunction(List<Integer> value) {
-		double beneficio = 0.0;
+		double beneficioTotal = 0.0;
 		double tiempoProd = 0.0;
 		double tiempoElab = 0.0;
 
+		// Cálculo de métricas básicas (Beneficio y Tiempos acumulados)
 		for (int i = 0; i < value.size(); i++) {
 			int unidades = value.get(i);
 			if (unidades > 0) {
-				// Beneficio = precio * unidades
-				beneficio += unidades * Datos2.getPrecioProd(i);
+				// Beneficio = Beneficio + unidades(i) * precio(i)
+				beneficioTotal += unidades * Datos2.getPrecioProd(i);
 				
 				// Tiempos totales del producto i (ya calculados en Datos2)
 				tiempoProd += unidades * Datos2.getTiempoProdProd(i);
@@ -43,16 +44,24 @@ public class Cromosoma2 implements RangeIntegerData<Solucion2> {
 
 		// Penalización por exceder los límites semanales de la fábrica
 		double penalizacion = 0.0;
+		
+		// A. Tiempo Total de Producción: sum(TiempoProdComp * Unidades) <= A
 		if (tiempoProd > Datos2.getTiempoProdTotal()) {
 			penalizacion += Math.pow(tiempoProd - Datos2.getTiempoProdTotal(), 2);
 		}
+		
+		// B. Tiempo Total de Elaboración Manual: sum(TiempoElabComp * Unidades) <= B
 		if (tiempoElab > Datos2.getTiempoElabTotal()) {
 			penalizacion += Math.pow(tiempoElab - Datos2.getTiempoElabTotal(), 2);
 		}
+		// C. Demanda Máxima de Mercado: x[i] <= getUnidsSemanaProd(i)
+		// Nota: Si el rango del cromosoma ya limita esto, la penalización será 0.
 
-		// Maximizamos beneficio penalizando soluciones inviables
-		// Usamos un factor de penalización alto (10000) para asegurar la viabilidad
-		return beneficio - 10000.0 * penalizacion;
+		// D. No Negatividad: x[i] >= 0
+		// Generalmente controlada por el tipo de cromosoma (Range), pero se puede validar
+		
+		// goal section: Maximizar beneficio total menos penalizaciones
+		return beneficioTotal - 10000.0 * penalizacion;
 	}
 
 	@Override
