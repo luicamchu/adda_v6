@@ -34,7 +34,7 @@ public class Cromosoma3 implements RangeIntegerData<Solucion3> {
         for (int i = 0; i < m; i++) {
             int j = value.get(i);
             
-            // Si el gen i tiene un valor menor a n, está asignado al contenedor j
+            // Si el gen i tiene un valor menor a n, está asignado a un contenedor j
             if (j < n) {
 				// 2. Restricción de Compatibilidad: x[i,j] <= getPuedeUbicarse(i,j)
 				// Si el método devuelve 0, la asignación es inválida
