@@ -1,0 +1,36 @@
+head section
+
+// Incluir los métodos necesarios para extraer datos de la clase Datos1
+Integer getNumCandidatos()
+Integer getNumCualidades()
+Integer getPresupuestoMax()
+Integer getValoracion(Integer i)
+Integer getTieneCualidad(Integer i, Integer j)
+Double getSueldoMin(Integer i)
+Integer getSonIncompatibles(Integer i, Integer j)
+
+// Definición de constantes para el modelo
+Integer n = getNumCandidatos()
+Integer m = getNumCualidades()
+Double S = getPresupuestoMax()
+
+goal section
+// decidir MAX/MIN y expresar como funcion lineal
+// Maximizar la suma de las valoraciones de los candidatos seleccionados
+max sum(getValoracion(i) x[i], i in 0 .. n-1)
+
+constraints section
+// 1. Cobertura de Cualidades: Al menos un candidato seleccionado por cada cualidad j
+sum(getTieneCualidad(i, j) x[i], i in 0 .. n-1) >= 1, j in 0 .. m-1
+
+// 2. Restricción de Presupuesto: La suma de sueldos no debe exceder S
+sum(getSueldoMin(i) x[i], i in 0 .. n-1) <= S
+
+// 3. Incompatibilidad: Si i y k son incompatibles, no pueden estar ambos (x[i]+x[k] <= 1)
+// Se aplica el filtro para generar la restricción solo cuando el método devuelve 1
+x[i] + x[k] <= 1, i in 0 .. n-1, k in i+1 .. n-1 | getSonIncompatibles(i, k) > 0
+// x[i] + x[k], i in 0 .. n-1, k in 1 .. n-1 | i != k
+
+bin section
+// Las variables x[i] son binarias: 1 si se contrata al candidato i, 0 si no.
+x[i], i in 0 .. n-1

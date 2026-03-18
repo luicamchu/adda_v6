@@ -1,0 +1,45 @@
+head section
+
+// Métodos necesarios para extraer datos de la clase Datos3
+Integer getNumElementos()
+Integer getNumContenedores()
+Integer getTamContenedor(Integer j)
+Integer getTamElemento(Integer i)
+Integer getPuedeUbicarse(Integer i, Integer j)
+
+// Definición de constantes
+Integer n = getNumElementos()
+Integer m = getNumContenedores()
+
+goal section
+
+// decidir MAX/MIN y expresar como funcion lineal
+
+// Maximizar la suma de contenedores marcados como "llenos"
+// Usaremos una variable binaria auxiliar y[j] que será 1 si el contenedor j está lleno.
+max sum(y[j], j in 0 .. m-1)
+
+constraints section
+// Seguir las restricciones del modelo y expresar como f. lineal
+
+// 1. Cada elemento i puede estar, como máximo, en un contenedor j
+sum(x[i,j], j in 0 .. m-1) <= 1, i in 0 .. n-1
+
+// 2. Restricción de Compatibilidad: x[i,j] solo puede ser 1 si son compatibles
+x[i,j] <= getPuedeUbicarse(i,j), i in 0 .. n-1, j in 0 .. m-1
+
+// 3. Límite de Capacidad: La suma de tamaños no puede exceder la capacidad del contenedor j
+sum(getTamElemento(i) * x[i,j], i in 0 .. n-1) <= getTamContenedor(j), j in 0 .. m-1
+
+// 4. Condición de Llenado Total (Activa y[j]):
+// Si y[j] es 1, la suma debe ser EXACTAMENTE la capacidad.
+// Forzamos: Suma >= Capacidad * y[j]
+sum(getTamElemento(i) * x[i,j], i in 0 .. n-1) >= getTamContenedor(j) * y[j], j in 0 .. m-1
+
+bin section
+
+// x[i,j] es 1 si el elemento i se asigna al contenedor j
+x[i,j], i in 0 .. n-1, j in 0 .. m-1
+
+// y[j] es 1 si el contenedor j está lleno al 100%
+y[j], j in 0 .. m-1

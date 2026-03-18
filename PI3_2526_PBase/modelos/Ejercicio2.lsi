@@ -1,0 +1,48 @@
+head section
+
+// Incluir los métodos necesarios para extraer datos de la clase Datos2
+Integer getNumProductos()
+Integer getNumComponentes()
+Double getPrecioProd(Integer i)
+Integer getUnidsSemanaProd(Integer i)
+Integer getTiempoProdComp(Integer j)
+Integer getTiempoElabComp(Integer j)
+Integer getUnidadesComponente(Integer i, Integer j)
+Integer getTiempoProdTotal()
+Integer getTiempoElabTotal()
+
+// Definir las constantes necesarias para las restricciones
+Integer n = getNumProductos()
+Integer m = getNumComponentes()
+Integer A = getTiempoProdTotal()
+Integer B = getTiempoElabTotal()
+
+goal section
+
+// decidir MAX/MIN y expresar como funcion lineal
+max sum(getPrecioProd(i) x[i], i in 0 .. n-1)
+
+constraints section
+
+// Seguir las restricciones del modelo y expresar como f. lineal
+
+// A. Tiempo Total de Producción
+// Se suma el tiempo de producción de cada componente j multiplicado por cuántas 
+// unidades de ese componente requiere cada producto i
+sum(getTiempoProdComp(j) sum(getUnidadesComponente(i,j) x[i], i in 0 .. n-1), j in 0 .. m-1) <= A
+
+// B. Tiempo Total de Elaboración Manual
+// Similar al anterior, pero con el tiempo de elaboración (manual)
+sum(getTiempoElabComp(j) sum(getUnidadesComponente(i,j) x[i], i in 0 .. n-1), j in 0 .. m-1) <= B
+
+// C. Demanda Máxima de Mercado (Límite semanal por producto)
+x[i] <= getUnidsSemanaProd(i), i in 0 .. n-1
+
+// D. No Negatividad
+x[i] >= 0, i in 0 .. n-1
+
+int section
+
+// En este caso, puesto que x[i] representa unidades físicas de productos, no usamos bin (que es para 0/1), 
+// sino que definimos las variables como enteras en la sección de declaración:
+x[i], i in 0 .. n-1
