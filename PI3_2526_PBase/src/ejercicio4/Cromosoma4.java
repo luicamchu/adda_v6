@@ -70,4 +70,5 @@ public class Cromosoma4 implements PermutationData<Solucion4> {
     public Solucion4 solution(List<Integer> value) {
         return Solucion4.create(value);
     }
+    
 }

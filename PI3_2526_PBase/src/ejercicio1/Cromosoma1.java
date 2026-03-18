@@ -9,7 +9,6 @@ import us.lsi.ag.agchromosomes.Chromosomes.ChromosomeType;
 
 public class Cromosoma1 implements BinaryData<Solucion1> {
 	public Cromosoma1(String file) {
-		//TODO 
 		Datos1.iniDatos(file);;
 	}
 
@@ -31,18 +30,17 @@ public class Cromosoma1 implements BinaryData<Solucion1> {
 		double sueldoTotal = 0;
 		Set<String> cualidadesCubiertas = new HashSet<>();
 		int incompatibilidades = 0;
-		int n = value.size();
 
 		// Recorrido del cromosoma para extraer datos de los candidatos seleccionados
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < value.size(); i++) {
 			if (value.get(i) == 1) { // Si el candidato i es seleccionado
 				valoracionTotal += Datos1.getValoracion(i);
 				sueldoTotal += Datos1.getSueldoMin(i);
 				cualidadesCubiertas.addAll(Datos1.getCualidades(i));
 				
 				// Comprobar incompatibilidades con otros seleccionados
-				for (int j = i + 1; j < n; j++) {
-					if (value.get(j) == 1 && Datos1.getSonIncompatibles(i, j)>0) {
+				for (int j = i + 1; j < value.size(); j++) {
+					if (value.get(j) == 1 && Datos1.getSonIncompatibles(i, j) > 0) {
 						incompatibilidades++;
 					}
 				}

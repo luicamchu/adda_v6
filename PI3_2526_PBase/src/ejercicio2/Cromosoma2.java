@@ -7,7 +7,6 @@ import us.lsi.ag.agchromosomes.Chromosomes.ChromosomeType;
 
 public class Cromosoma2 implements RangeIntegerData<Solucion2> {
 	public Cromosoma2(String file) {
-		//TODO 
 		Datos2.iniDatos(file);
 	}
 	
@@ -33,7 +32,7 @@ public class Cromosoma2 implements RangeIntegerData<Solucion2> {
 		for (int i = 0; i < value.size(); i++) {
 			int unidades = value.get(i);
 			if (unidades > 0) {
-				// Beneficio = Beneficio + unidades(i) * precio(i)
+				// Beneficio total = Beneficio acumulado + unidades(i) * precio(i)
 				beneficioTotal += unidades * Datos2.getPrecioProd(i);
 				
 				// Tiempos totales del producto i (ya calculados en Datos2)

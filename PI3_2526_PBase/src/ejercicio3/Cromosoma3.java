@@ -7,7 +7,6 @@ import us.lsi.ag.agchromosomes.Chromosomes.ChromosomeType;
 
 public class Cromosoma3 implements RangeIntegerData<Solucion3> {
 	public Cromosoma3(String file) {
-		//TODO 
 		Datos3.iniDatos(file);
 	}
 	
