@@ -4,6 +4,8 @@ import us.lsi.common.IntegerSet;
 import us.lsi.graphs.virtual.VirtualVertex;
 
 public interface SubconjuntosVertex extends 
+	//es un grafo virtaul, son grafos y vertices
+	//cuales son los tipos de vertices y de aristas, y los 
 	VirtualVertex<SubconjuntosVertex, SubconjuntosEdge, Integer> {
 	
 	Integer index();
